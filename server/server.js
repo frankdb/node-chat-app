@@ -15,12 +15,22 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('New user connected');
 
+  socket.emit('newEmail', {
+    from: 'mike@example.com',
+    text: 'Hey. What is going on?',
+    createdAt: 123
+  })
+  // second argument - data you will send. you don't have to send anything.
+
+  socket.on('createEmail', (newEmail) => {
+    console.log('createEmail', newEmail)
+  })
+  // newEmail is data sent along with event
+
   socket.on('disconnect', () => {
     console.log('Disconnected from server');
   })
 });
-// io.on lets you register an event listener. we can listen for a specific event and do something when that event happens.
-// connection - lets you listen for a new connection (client connected to the server) and it lets you do something when that connection comes in. in order to do something - callback function. socket argument. this represents the individual socket
 
 server.listen(port, () => {
   console.log(`Server is up on ${port}`);
