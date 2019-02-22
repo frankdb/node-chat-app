@@ -15,15 +15,16 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('New user connected');
 
-  socket.emit('newMessage', {
-    from: 'David Bowie',
-    text: 'Ground control to Major Tom.',
-    createdAt: 1975
+  socket.on('createMessage', (message) => {
+    console.log('Create Message', message);
+    io.emit('newMessage', {
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime()
+    })
   })
-
-  socket.on('createMessage', (newMessage) => {
-    console.log('Create Message', newMessage)
-  })
+  // update create message listener. currently all we do is log the data to the screen. we want to emit a new message event to everybody
+  // socket.emit emits an event to a single connection. io.emit emits an event to every single connection
 
   socket.on('disconnect', () => {
     console.log('Disconnected from server');
